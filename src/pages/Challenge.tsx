@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Award, CheckCircle, Clock, Terminal, AlertTriangle } from 'lucide-react';
@@ -11,116 +10,100 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CodeEditor from '@/components/CodeEditor';
 
-// Mock challenge data
+// Mock challenge data with Python code
 const mockChallengeData = {
   beginner: [
     {
       id: "syntax-error",
       title: "Syntax Error Slayer",
-      description: "Fix the syntax errors in this JavaScript function.",
+      description: "Fix the syntax errors in this Python function.",
       difficulty: "beginner",
       points: 20,
       timeLimit: 5, // in minutes
-      initialCode: `function calculateSum(a, b) {
-  let result = a + b
-  console.log("The sum is: " + result);
-  return result
-`,
-      correctCode: `function calculateSum(a, b) {
-  let result = a + b;
-  console.log("The sum is: " + result);
-  return result;
-}`,
-      hints: ["Check for missing semicolons", "Are there any missing brackets?"]
+      initialCode: `def calculate_sum(a, b)
+    result = a + b
+    print("The sum is:", result)
+    return result`,
+      correctCode: `def calculate_sum(a, b):
+    result = a + b
+    print("The sum is:", result)
+    return result`,
+      hints: ["Check for missing colons", "Python functions need a colon after the definition"]
     },
     {
-      id: "variable-typo",
-      title: "Variable Typo Tracker",
-      description: "Find and fix the typo in the variable name.",
+      id: "indentation-error",
+      title: "Indentation Detective",
+      description: "Fix the indentation errors in this Python code.",
       difficulty: "beginner",
       points: 25,
       timeLimit: 5,
-      initialCode: `function greetUser(name) {
-  const message = "Hello, " + name + "!";
-  
-  // Display welcome message
-  console.log(mesage);
-  
-  return message;
-}`,
-      correctCode: `function greetUser(name) {
-  const message = "Hello, " + name + "!";
-  
-  // Display welcome message
-  console.log(message);
-  
-  return message;
-}`,
-      hints: ["Variable names must match exactly", "Check the console.log statement"]
+      initialCode: `def greet_user(name):
+print("Hello,", name)
+    return "Welcome, " + name`,
+      correctCode: `def greet_user(name):
+    print("Hello,", name)
+    return "Welcome, " + name`,
+      hints: ["Python relies on proper indentation", "All code inside a function should be indented consistently"]
     }
   ],
   intermediate: [
     {
       id: "logical-error",
-      title: "Logical Loop Finder",
-      description: "Fix the logical error in this loop that's causing incorrect output.",
+      title: "List Loop Logic",
+      description: "Fix the logical error in this Python loop that's causing incorrect output.",
       difficulty: "intermediate",
       points: 40,
       timeLimit: 10,
-      initialCode: `function sumEvenNumbers(numbers) {
-  let sum = 0;
-  
-  for (let i = 0; i <= numbers.length; i++) {
-    if (numbers[i] % 2 === 0) {
-      sum += numbers[i];
-    }
-  }
-  
-  return sum;
-}`,
-      correctCode: `function sumEvenNumbers(numbers) {
-  let sum = 0;
-  
-  for (let i = 0; i < numbers.length; i++) {
-    if (numbers[i] % 2 === 0) {
-      sum += numbers[i];
-    }
-  }
-  
-  return sum;
-}`,
-      hints: ["Check the loop condition", "Array indices start at 0 and end at length-1"]
+      initialCode: `def sum_even_numbers(numbers):
+    total = 0
+    
+    for i in range(0, len(numbers) + 1):
+        if numbers[i] % 2 == 0:
+            total += numbers[i]
+    
+    return total`,
+      correctCode: `def sum_even_numbers(numbers):
+    total = 0
+    
+    for i in range(0, len(numbers)):
+        if numbers[i] % 2 == 0:
+            total += numbers[i]
+    
+    return total`,
+      hints: ["Check the range of your loop", "Python lists are 0-indexed and go up to len-1"]
     }
   ],
   pro: [
     {
-      id: "async-bug",
-      title: "Async Function Fixer",
-      description: "Fix the bug in this asynchronous JavaScript function.",
+      id: "recursive-bug",
+      title: "Recursive Function Fixer",
+      description: "Fix the bug in this recursive Python function that calculates Fibonacci numbers.",
       difficulty: "pro",
       points: 60,
       timeLimit: 15,
-      initialCode: `async function fetchUserData(userId) {
-  try {
-    const response = await fetch('https://api.example.com/users/' + userId);
-    const data = response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    throw error;
-  }
-}`,
-      correctCode: `async function fetchUserData(userId) {
-  try {
-    const response = await fetch('https://api.example.com/users/' + userId);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    throw error;
-  }
-}`,
-      hints: ["The response.json() method returns a Promise", "You need to wait for the JSON parsing to complete"]
+      initialCode: `def fibonacci(n):
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+# This should return 55 for n=10
+result = fibonacci(10)
+print(result)`,
+      correctCode: `def fibonacci(n):
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+# This should return 55 for n=10
+result = fibonacci(10)
+print(result)`,
+      hints: ["The algorithm is correct, but inefficient", "Try adding memoization to optimize it"]
     }
   ]
 };

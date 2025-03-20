@@ -9,6 +9,7 @@ import { Bug, Play, Lightbulb, Check, AlertTriangle } from 'lucide-react';
 interface CodeEditorProps {
   initialCode: string;
   correctCode: string;
+  language?: string;
   className?: string;
   onSubmit: (code: string, isCorrect: boolean) => void;
 }
@@ -16,6 +17,7 @@ interface CodeEditorProps {
 const CodeEditor: React.FC<CodeEditorProps> = ({
   initialCode,
   correctCode,
+  language = "python",
   className,
   onSubmit,
 }) => {
@@ -53,19 +55,21 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     // Simulate code execution and output
     setTimeout(() => {
       try {
-        // In a real implementation, you would execute the code safely
+        // In a real implementation, you would execute the code safely on a server
         // For this demo, we'll simulate output based on code structure
         
-        // Check if code has syntax errors (very simplistic check)
-        if (code.includes('consol.log') || code.includes('connsole.log')) {
-          setOutput("Uncaught ReferenceError: consol is not defined");
-        } else if (code.includes('= =') || code.includes('! =')) {
-          setOutput("Syntax error: Unexpected token '='");
-        } else if (code.includes('functoin')) {
-          setOutput("Syntax error: Unexpected identifier 'functoin'");
+        // Check if code has syntax errors (very simplistic check for Python)
+        if (code.includes('print(') && !code.includes(')')) {
+          setOutput("SyntaxError: unexpected EOF while parsing");
+        } else if (code.includes('printtt')) {
+          setOutput("NameError: name 'printtt' is not defined");
+        } else if (code.includes('def') && !code.includes(':')) {
+          setOutput("SyntaxError: expected ':'");
+        } else if (code.includes('  ') && code.includes('    ')) {
+          setOutput("IndentationError: inconsistent use of tabs and spaces in indentation");
         } else {
           // Simulate successful output
-          setOutput("Program executed successfully!\nOutput: " + (code.includes('console.log') ? "Hello, world!" : "No output"));
+          setOutput("Program executed successfully!\nOutput: " + (code.includes('print') ? "Expected output" : "No output"));
         }
       } catch (error) {
         setOutput(`Error: ${error}`);
@@ -103,10 +107,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         <TabsContent value="editor" className="p-0">
           <Card className="rounded-t-none border-t-0">
             <div className="relative">
+              <div className="absolute top-0 left-0 right-0 py-1 px-4 bg-secondary text-xs text-muted-foreground">
+                {language.toUpperCase()}
+              </div>
               <textarea
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="w-full h-80 p-4 font-mono text-sm resize-none bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-primary rounded-md border"
+                className="w-full h-80 p-4 pt-8 font-mono text-sm resize-none bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-primary rounded-md border"
                 spellCheck="false"
               />
               
